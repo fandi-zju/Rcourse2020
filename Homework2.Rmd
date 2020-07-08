@@ -44,7 +44,12 @@ eliminate_rownumber
 2. _This Very New House_  
     a. The variable `Built_2005_or_later` indicates the percentage of houses in each Census tract built since 2005.  Plot median house prices against this variable.
 ```{r}
-plot(ca_panew$Median_house_value~ca_panew$Built_2005_or_later)
+ggplot(ca_panew)+
+  geom_point(aes(Built_2005_or_later,Median_house_value))+
+  labs(title="ca_panew")+
+  theme_bw()
+   
+#plot(ca_panew$Median_house_value~ca_panew$Built_2005_or_later)
 ```
     b. Make a new plot, or pair of plots, which breaks this out by state.  Note that the state is recorded in the `STATEFP` variable, with California being state 6 and Pennsylvania state 42.
 ```{r}
@@ -52,14 +57,23 @@ S6index<-which(ca_panew$STATEFP==6)
 S42index<-which(ca_panew$STATEFP==42)
 California<-ca_panew[S6index,]
 Pennsylvania2<-ca_panew[S42index,]
-plot(California$Median_house_value~California$Built_2005_or_later)
-plot(Pennsylvania2$Median_house_value~Pennsylvania2$Built_2005_or_later)
+ggplot(California)+
+  geom_point(aes(Built_2005_or_later,Median_house_value))+
+  labs(title="California")+
+  theme_bw()
+ggplot(Pennsylvania2)+
+  geom_point(aes(Built_2005_or_later,Median_house_value))+
+  labs(title="Pennsylvania2")+
+  theme_bw()
+  
+#plot(California$Median_house_value~California$Built_2005_or_later)
+#plot(Pennsylvania2$Median_house_value~Pennsylvania2$Built_2005_or_later)
 ```
 3. _Nobody Home_  
 The vacancy rate is the fraction of housing units which are not occupied.  The dataframe contains columns giving the total number of housing units for each Census tract, and the number of vacant housing units.  
     a. Add a new column to the dataframe which contains the vacancy rate.  What are the minimum, maximum, mean, and median vacancy rates?
 ```{r}
-ca_panew$Vacany_rates<-ca_panew$Vacant_units/ca_panew$Total_units
+ca_panew$Vacancy_rates<-ca_panew$Vacant_units/ca_panew$Total_units
 ```
 ```{r}
 min(ca_panew$Vacany_rates)
@@ -75,7 +89,10 @@ median(ca_panew$Vacany_rates)
 ```
     b. Plot the vacancy rate against median house value.
 ```{r}
-plot(ca_panew$Vacany_rates~ca_panew$Median_house_value)
+ggplot(ca_panew)+
+  geom_point(aes(Median_house_value,Vacancy_rates))+
+  theme_bw()
+#plot(ca_panew$Vacancy_rates~ca_panew$Median_house_value)
 ```
     c. Plot vacancy rate against median house value separately for California and for Pennsylvania.  Is there a difference?
 ```{r}
@@ -83,16 +100,29 @@ S6index2<-which(ca_panew$STATEFP==6)
 S42index2<-which(ca_panew$STATEFP==42)
 California2<-ca_panew[S6index2,]
 Pennsylvania2<-ca_panew[S42index2,]
-plot(California2$Vacany_rates~California2$Median_house_value)
-plot(Pennsylvania2$Vacany_rates~Pennsylvania2$Median_house_value)
+ggplot(California2)+
+  geom_point(aes(Median_house_value,Vacancy_rates))+
+  labs(title="California2")+
+  theme_bw()
+ggplot(Pennsylvania2)+
+  geom_point(aes(Median_house_value,Vacancy_rates))+
+  labs(title="Pennsylvania2")+
+  theme_bw()
+#plot(California2$Vacancy_rates~California2$Median_house_value)
+#plot(Pennsylvania2$Vacancy_rates~Pennsylvania2$Median_house_value)
 
 ```
+```{r}
+#California has a high vacancy rate for both high and low value houses, but another place has a high vacancy rate for low value houses, but a low vacancy rate for high value houses
+```
+
 4. The column `COUNTYFP` contains a numerical code for counties within each state.  We are interested in Alameda County (county 1 in California), Santa Clara (county 85 in California), and Allegheny County (county 3 in Pennsylvania).
     a. Explain what the block of code at the end of this question is supposed to accomplish, and how it does it.
 Answer for a:the block of code intends to calculate the median of total units for three given counties.And the code for Alameda county is given below.It uses a loop to do that.
     b. Give a single line of R which gives the same final answer as the block of code.  Note: there are at least two ways to do this; you just have to find one.
 ```{r}
 median(ca_panew[which(ca_panew$STATEFP==6&ca_panew$COUNTYFP==1),10])
+#median(as.matrix(subset(ca_panew,STATEFP==6&COUNTYFP==1,select=Median_house_value)))  This is the common usage in subset of the  data.frame for conditional screening
 ```
     c. For Alameda, Santa Clara and Allegheny Counties, what were the average percentages of housing built since 2005?
 ```{r}
@@ -140,26 +170,38 @@ cor(Allegheny$Median_house_value,Allegheny$Built_2005_or_later)
 ```
     e. Make three plots, showing median house values against median income, for Alameda, Santa Clara, and Allegheny Counties.  (If you can fit the information into one plot, clearly distinguishing the three counties, that's OK too.)
 ```{r}
-plot(Alameda$Median_house_value,Alameda$Median_household_income)
+ggplot(Alameda)+
+  geom_point(aes(Median_household_income,Median_house_value))+
+  labs(title="Alameda")+
+  theme_bw()
+#plot(Alameda$Median_house_value,Alameda$Median_household_income)
 ```
 ```{r}
-plot(Santa$Median_house_value,Santa$Median_household_income)
+ggplot(Santa)+
+  geom_point(aes(Median_household_income,Median_house_value))+
+  labs(title="Alameda")+
+  theme_bw()
+#plot(Santa$Median_house_value,Santa$Median_household_income)
 ```
 ```{r}
-plot(Allegheny$Median_house_value,Allegheny$Median_household_income)
+ggplot(Allegheny)+
+  geom_point(aes(Median_household_income,Median_house_value))+
+  labs(title="Alameda")+
+  theme_bw()
+#plot(Allegheny$Median_house_value,Allegheny$Median_household_income)
 ```
 ```{r, eval=FALSE}
 acca <- c()
-for (tract in 1:nrow(ca_pa)) {
-  if (ca_pa$STATEFP[tract] == 6) {
-    if (ca_pa$COUNTYFP[tract] == 1) {
+for (tract in 1:nrow(ca_panew)) {
+  if (ca_panew$STATEFP[tract] == 6) {
+    if (ca_panew$COUNTYFP[tract] == 1) {
       acca <- c(acca, tract)
     }
   }
 }
 accamhv <- c()
 for (tract in acca) {
-  accamhv <- c(accamhv, ca_pa[tract,10])
+  accamhv <- c(accamhv, ca_panew[tract,10])
 }
 median(accamhv)
 ```
@@ -201,7 +243,7 @@ exceedcutoff(c(1:100),50)
 ```
 (b) Obtain the vector ex01.36 from the Devore6 (or Devore7) package. These data give the times required for individuals to escape from an oil platform during a drill. Use dotplot() to show the distribution of times. Calculate the proportion of escape times that exceed 7 minutes.
 ```{r}
-
+#Here I cannot find this package.So the teacher told us we ccould omit this question.
 ```
 
 MB.Ch1.18. The Rabbit data frame in the MASS library contains blood pressure change measurements on five rabbits (labeled as R1, R2, . . . ,R5) under various control and treatment conditions. Read the help file for more information. Use the unstack() function (three times) to convert Rabbit to the following form:
@@ -215,6 +257,10 @@ Treatment Dose   R1   R2   R3   R4   R5
 ....
 ```{r}
 library(MASS)
-unstack(Rabbit,BPchange~Animal)
+Rabbit1<-unstack(Rabbit,BPchange~Animal)
+Rabbit2<-unstack(Rabbit,Treatment~Animal)
+Rabbit3<-unstack(Rabbit,Dose~Animal)
+Rabbit_new<-data.frame(Treatment=Rabbit2[[1]],Dose=Rabbit3[[1]],Rabbit1)
+Rabbit_new
 ```
 
